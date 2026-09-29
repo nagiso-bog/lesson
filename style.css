@@ -1,0 +1,21 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  padding: 0;
+}
+.form {
+  padding: 30px;
+  background-color: rgb(30, 162, 238);
+}
+.line {
+  text-decoration: line-through;
+}
+p::selection {
+  background-color: transparent;
+  user-select: none;
+}
+ul {
+  list-style: none;
+}
