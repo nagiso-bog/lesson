@@ -1,9 +1,6 @@
 const STORAGE_KEY = "vista-lab-tasks";
 const CREATED_KEY = "vista-lab-created";
 const PAGE_SIZE = 4;
-const MONTHS = ["January", "February", "March", "April", "May", "June", "July",
-  "August", "September", "October", "November", "December"];
-const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 const form = document.querySelector("#taskForm");
 const titleInput = document.querySelector("#taskTitle");
@@ -23,8 +20,6 @@ const icons = {
 };
 
 // ---------- State ----------
-let selectedDate = new Date();
-let calendarMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
 let visibleCount = PAGE_SIZE;
 let editingId = null;
 let tasks = loadTasks();
@@ -63,71 +58,33 @@ function save() {
 const pad = (n) => String(n).padStart(2, "0");
 const formatDate = (d) => `${pad(d.getDate())}-${pad(d.getMonth() + 1)}-${d.getFullYear()}`;
 
-// ---------- Date + calendar ----------
-function renderDateInfo() {
-  document.querySelector("#dayName").textContent = DAYS[selectedDate.getDay()];
-  document.querySelector("#fullDate").textContent =
-    `${pad(selectedDate.getDate())}, ${MONTHS[selectedDate.getMonth()]} ${selectedDate.getFullYear()}`;
-}
-
-function isoWeek(date) {
-  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-  const day = d.getUTCDay() || 7;
-  d.setUTCDate(d.getUTCDate() + 4 - day);
-  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-  return Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
-}
-
+// ---------- Calendar (static, as in the design) ----------
 function renderCalendar() {
-  const grid = document.querySelector("#calendar");
-  const year = calendarMonth.getFullYear();
-  const month = calendarMonth.getMonth();
-  document.querySelector("#monthName").textContent =
-    year === new Date().getFullYear() ? MONTHS[month] : `${MONTHS[month]} ${year}`;
+  // April 2024: weeks 14–19, Monday first, the 3rd is highlighted
+  const year = 2024;
+  const month = 3;
+  const highlighted = 3;
 
   const cells = ['<span></span>'];
   ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"].forEach((d, i) => {
     cells.push(`<span class="cal-weekday${i > 4 ? " cal-weekend" : ""}">${d}</span>`);
   });
 
-  // Monday of the week containing the 1st
-  const first = new Date(year, month, 1);
-  const offset = (first.getDay() + 6) % 7;
-  const cursor = new Date(year, month, 1 - offset);
-  const today = new Date();
-
-  for (let week = 0; week < 6; week++) {
-    cells.push(`<span class="cal-week">${isoWeek(cursor)}</span>`);
+  const cursor = new Date(year, month, 1);
+  for (let week = 14; week <= 19; week++) {
+    cells.push(`<span class="cal-week">${week}</span>`);
     for (let i = 0; i < 7; i++) {
-      const classes = ["cal-day"];
-      if (cursor.getMonth() !== month) classes.push("cal-muted");
+      const classes = [];
+      const inMonth = cursor.getMonth() === month;
+      if (inMonth) classes.push("cal-muted");
       if (i > 4) classes.push("cal-weekend");
-      if (cursor.toDateString() === selectedDate.toDateString()) classes.push("cal-today");
-      const title = cursor.toDateString() === today.toDateString() ? ' title="Today"' : "";
-      cells.push(`<span class="${classes.join(" ")}" data-date="${cursor.toISOString()}"${title}>${cursor.getDate()}</span>`);
+      if (inMonth && cursor.getDate() === highlighted) classes.push("cal-today");
+      cells.push(`<span class="${classes.join(" ")}">${cursor.getDate()}</span>`);
       cursor.setDate(cursor.getDate() + 1);
     }
   }
-  grid.innerHTML = cells.join("");
+  document.querySelector("#calendar").innerHTML = cells.join("");
 }
-
-document.querySelector("#calendar").addEventListener("click", (e) => {
-  const cell = e.target.closest(".cal-day");
-  if (!cell) return;
-  selectedDate = new Date(cell.dataset.date);
-  calendarMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
-  renderDateInfo();
-  renderCalendar();
-});
-
-document.querySelector("#prevMonth").addEventListener("click", () => {
-  calendarMonth.setMonth(calendarMonth.getMonth() - 1);
-  renderCalendar();
-});
-document.querySelector("#nextMonth").addEventListener("click", () => {
-  calendarMonth.setMonth(calendarMonth.getMonth() + 1);
-  renderCalendar();
-});
 
 // ---------- Tasks ----------
 function filteredTasks() {
@@ -204,7 +161,7 @@ form.addEventListener("submit", (e) => {
     detail: detailInput.value.trim(),
     category: categoryFilter.value === "all" ? "personal" : categoryFilter.value,
     priority: priorityFilter.value === "all" ? "medium" : priorityFilter.value,
-    date: formatDate(selectedDate),
+    date: formatDate(new Date()),
     done: false,
   });
   createdTotal++;
@@ -271,7 +228,17 @@ loadMoreBtn.addEventListener("click", () => {
   })
 );
 
+// ---------- Scale main to the screen ----------
+const DESIGN_WIDTH = 860;
+const container = document.querySelector(".container");
+
+function scaleMain() {
+  const scale = Math.max(1, document.documentElement.clientWidth / DESIGN_WIDTH);
+  container.style.zoom = scale;
+}
+window.addEventListener("resize", scaleMain);
+
 // ---------- Init ----------
-renderDateInfo();
+scaleMain();
 renderCalendar();
 renderTasks();

@@ -68,12 +68,12 @@ button { cursor: pointer; border: none; background: none; }
   background: var(--coral);
   display: grid;
   place-items: center;
-  font-family: "Great Vibes", cursive;
+  font-family: "Island Moments", cursive;
   font-size: 30px;
   color: #1d1d1f;
 }
 .logo__text {
-  font-family: "Great Vibes", cursive;
+  font-family: "Island Moments", cursive;
   font-size: 44px;
 }
 .logo--small .logo__mark { width: 34px; height: 34px; }
@@ -98,10 +98,9 @@ button { cursor: pointer; border: none; background: none; }
 .container {
   flex: 1;
   width: 100%;
+  max-width: 860px;
   margin: 0 auto;
-  padding: 28px 28px 26px;
-  display: flex;
-  flex-direction: column;
+  padding: 28px 20px 26px;
 }
 
 .greeting {
@@ -119,14 +118,13 @@ button { cursor: pointer; border: none; background: none; }
   display: grid;
   grid-template-columns: 200px 1fr;
   column-gap: 38px;
-  flex: 1;
   align-content: start;
   row-gap: 14px;
 }
 
 /* ---------- Side / calendar ---------- */
 .side__day {
-  font-family: "Great Vibes", cursive;
+  font-family: "Island Moments", cursive;
   color: var(--coral);
   font-size: 30px;
   line-height: 1;
@@ -143,23 +141,16 @@ button { cursor: pointer; border: none; background: none; }
   border-radius: 6px;
   padding: 8px 8px 10px;
   font-size: 10px;
-  color: #666;
+  color: #333;
 }
 .calendar__head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   font-size: 10px;
   font-weight: 500;
   margin-bottom: 14px;
 }
-.calendar__nav {
-  color: #aaa;
-  font-size: 14px;
-  padding: 0 6px;
-  line-height: 1;
-}
-.calendar__nav:hover { color: var(--coral); }
 
 .calendar__grid {
   display: grid;
@@ -179,15 +170,12 @@ button { cursor: pointer; border: none; background: none; }
   color: #bbb;
   outline: 1px solid #555;
 }
-.cal-muted { color: #c2c2c2; }
+.cal-muted { color: #9a9a9a; }
 .cal-weekend { color: var(--weekend); }
-.cal-muted.cal-weekend { color: #f2a3a5; }
 .cal-today {
   background: var(--coral);
   color: #1d1d1f !important;
 }
-.cal-day { cursor: pointer; }
-.cal-day:hover:not(.cal-today) { background: #f4eee6; }
 
 /* ---------- Task form ---------- */
 .task-form {
@@ -282,7 +270,7 @@ button { cursor: pointer; border: none; background: none; }
 .task-list {
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  grid-template-columns: 1fr 1fr;
   gap: 17px 14px;
 }
 .task {
